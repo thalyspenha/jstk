@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>TikTok Video Downloader</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      text-align: center;
+      padding: 50px;
+    }
+
+    input, button {
+      padding: 10px;
+      width: 300px;
+      margin: 10px;
+    }
+
+    .result {
+      margin-top: 20px;
+    }
+
+    a {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 10px 15px;
+      background: #28a745;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+    }
+
+    a:hover {
+      background: #218838;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔽 Baixar Vídeo do TikTok</h1>
+  <input type="text" id="videoUrl" placeholder="Cole o link do vídeo TikTok" />
+  <br />
+  <button onclick="baixarVideo()">Baixar</button>
+
+  <div class="result" id="resultado"></div>
+
+  <script>
+    async function baixarVideo() {
+      const url = document.getElementById("videoUrl").value.trim();
+      const resultado = document.getElementById("resultado");
+      resultado.innerHTML = "🔍 Buscando vídeo...";
+
+      try {
+        const response = await fetch(`https://www.tikwm.com/api/?url=${encodeURIComponent(url)}`, {
+          headers: {
+            "User-Agent": "Mozilla/5.0"
+          }
+        });
+
+        const data = await response.json();
+
+        if (data && data.data && data.data.play) {
+          const videoLink = data.data.play;
+          const title = data.data.title || "tiktok_video";
+          resultado.innerHTML = `
+            <p>🎬 Vídeo: ${title}</p>
+            <a href="${videoLink}" download target="_blank">📥 Baixar vídeo</a>
+          `;
+        } else {
+          resultado.innerHTML = "❌ Vídeo não encontrado.";
+        }
+      } catch (error) {
+        console.error(error);
+        resultado.innerHTML = "❌ Erro ao buscar o vídeo.";
+      }
+    }
+  </script>
+</body>
+</html>
