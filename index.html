@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>TikTok Downloader</title>
   <style>
     body {
@@ -10,39 +10,25 @@
       padding-top: 50px;
       background-color: #f2f2f2;
     }
-
     input, button {
       padding: 10px;
       font-size: 16px;
       margin: 10px;
       width: 300px;
     }
-
     .result {
       margin-top: 30px;
     }
-
-    .download-link {
-      margin-top: 20px;
-      display: inline-block;
-      background-color: #4CAF50;
-      color: white;
-      padding: 10px 20px;
-      text-decoration: none;
-      border-radius: 5px;
-    }
-
     .error {
       color: red;
     }
   </style>
 </head>
 <body>
-  <h1>🔗 Baixador de Vídeos TikTok</h1>
+  <h1>📥 Baixar Vídeo do TikTok</h1>
   <input type="text" id="videoUrl" placeholder="Cole o link do vídeo TikTok aqui" />
   <br />
   <button onclick="baixarVideo()">Baixar</button>
-
   <div class="result" id="resultado"></div>
 
   <script>
@@ -63,28 +49,29 @@
 
         if (data && data.data && data.data.play) {
           const videoLink = data.data.play;
-          const title = data.data.title || "tiktok_video";
+          const title = (data.data.title || "tiktok_video").replace(/[^a-z0-9]/gi, "_");
 
-          resultado.innerHTML = `
-            <p>🎥 Vídeo encontrado: <strong>${title}</strong></p>
-            <a class="download-link" id="downloadBtn" href="${videoLink}" download="${title}.mp4" onclick="downloadVideo()">📥 Baixar Vídeo</a>
-          `;
+          resultado.innerHTML = `<p>🎥 Baixando: <strong>${title}.mp4</strong></p>`;
+
+          // Faz o download automático
+          const blob = await fetch(videoLink).then(res => res.blob());
+          const urlBlob = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = urlBlob;
+          a.download = `${title}.mp4`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(urlBlob);
+
+          resultado.innerHTML += `<p>✅ Download iniciado com sucesso!</p>`;
         } else {
           resultado.innerHTML = '<p class="error">❌ Vídeo não encontrado. Verifique o link.</p>';
         }
       } catch (error) {
         console.error(error);
-        resultado.innerHTML = '<p class="error">❌ Erro ao tentar buscar o vídeo.</p>';
+        resultado.innerHTML = '<p class="error">❌ Erro ao tentar baixar o vídeo.</p>';
       }
-    }
-
-    // Função que simula o download diretamente
-    function downloadVideo() {
-      const downloadLink = document.getElementById('downloadBtn');
-      const link = document.createElement('a');
-      link.href = downloadLink.href;
-      link.download = downloadLink.download;
-      link.click();
     }
   </script>
 </body>
