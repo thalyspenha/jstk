@@ -2,32 +2,77 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TikTok Downloader</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       font-family: Arial, sans-serif;
-      text-align: center;
-      padding-top: 50px;
       background-color: #f2f2f2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
     }
+
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+    }
+
     input, button {
-      padding: 10px;
-      font-size: 16px;
-      margin: 10px;
-      width: 300px;
+      padding: 12px;
+      font-size: 1rem;
+      margin: 10px 0;
+      width: 100%;
+      max-width: 400px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
     }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
     .result {
       margin-top: 30px;
+      max-width: 400px;
+      word-wrap: break-word;
     }
+
     .error {
       color: red;
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      input, button {
+        font-size: 1rem;
+        padding: 10px;
+      }
     }
   </style>
 </head>
 <body>
   <h1>📥 Baixar Vídeo do TikTok</h1>
   <input type="text" id="videoUrl" placeholder="Cole o link do vídeo TikTok aqui" />
-  <br />
   <button onclick="baixarVideo()">Baixar</button>
   <div class="result" id="resultado"></div>
 
@@ -53,7 +98,6 @@
 
           resultado.innerHTML = `<p>🎥 Baixando: <strong>${title}.mp4</strong></p>`;
 
-          // Faz o download automático
           const blob = await fetch(videoLink).then(res => res.blob());
           const urlBlob = URL.createObjectURL(blob);
           const a = document.createElement("a");
